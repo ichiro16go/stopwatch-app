@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import './stopwatch_controller.dart';
 import 'dart:async';
-import 'stopwatch.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,40 +33,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final SW = stopwatch_contents();
-  DateTime startTime = DateTime(0, 0, 0, 0, 0);
-  bool running = false;
-  int totaltime = 0;
-  String displayTime = '00:00.00';
+  final SW = Stopwatch();
+  Timer? timer;
+  int timeInt = 0;
+  String displayTime = "00:00.00";
+  void start() {
+    print("start");
+    timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+      setState(() {
+        timeInt++;
+        displayTime = SW.displaytime(timeInt);
+        print(displayTime);
+      });
+    });
+  }
 
-  //Timerを使うとなぜかうまくいかず
-  // Timer? timer;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-  //     if (running) {
-  //       setState(() {
-  //         totaltime = SW.displaytime(startTime, totaltime);
-  //       });
-  //     }
-  //   });
-  // }
+  void stop() {
+    print("stop");
+    timer?.cancel();
+  }
 
-  // @override
-  // void dispose() {
-  //   timer?.cancel();
-  //   super.dispose();
-  // }
+  void reset() {
+    print("reset");
+    setState(() {
+      timeInt = 0;
+      displayTime = "00:00.00";
+    });
+    print("00:00.00");
+    timer?.cancel();
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Stopwatch",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-      ),
       body: Container(
         decoration: const BoxDecoration(color: Colors.black),
         width: MediaQuery.of(context).size.width,
@@ -76,7 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              SW.printTime(totaltime), //時間を表示
+              //時間を表示
+              displayTime,
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -89,21 +87,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 FloatingActionButton(
                     backgroundColor: Colors.green,
                     onPressed: () {
-                      setState(() {
-                        startTime = SW.start(startTime, running);
-                        running = true;
-                        totaltime = SW.displaytime(startTime, totaltime);
-                      });
+                      start();
+                      setState(() {});
                     },
                     child: const Icon(Icons.play_arrow,
                         color: Colors.white, size: 40)),
                 FloatingActionButton(
                   onPressed: () {
-                    setState(() {
-                      // dispose();
-                      totaltime = SW.stop(startTime, running, totaltime);
-                      running = false;
-                    });
+                    stop();
+                    setState(() {});
                   },
                   backgroundColor: Colors.yellow,
                   child: const Icon(
@@ -114,10 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 FloatingActionButton(
                   onPressed: () {
-                    setState(() {
-                      totaltime = SW.resetTime();
-                      dispose();
-                    });
+                    reset();
+                    setState(() {});
                   },
                   backgroundColor: Colors.red,
                   child: const Icon(
