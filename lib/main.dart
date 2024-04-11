@@ -37,16 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Timer? timer;
   int timeInt = 0;
   String displayTime = "00:00.00";
-  // void start() async{
-  //   print("start");
-  //   timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-  //     setState(() {
-  //       timeInt++;
-  //       displayTime = SW.displaytime(timeInt);
-  //       print(displayTime);
-  //     });
-  //   });
-  // }
+  
   void start() async {
   print("start");
   if (timer != null && timer!.isActive) {
