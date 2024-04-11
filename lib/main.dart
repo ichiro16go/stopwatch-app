@@ -37,16 +37,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Timer? timer;
   int timeInt = 0;
   String displayTime = "00:00.00";
-  void start() {
-    print("start");
-    timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-      setState(() {
-        timeInt++;
-        displayTime = SW.displaytime(timeInt);
-        print(displayTime);
-      });
-    });
+  
+  void start() async {
+  print("start");
+  if (timer != null && timer!.isActive) {
+    timer!.cancel();
   }
+  timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
+    setState(() {
+      timeInt++;
+      displayTime = SW.displaytime(timeInt);
+      print(displayTime);
+    });
+  });
+}
+
 
   void stop() {
     print("stop");
@@ -86,14 +91,14 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 FloatingActionButton(
                     backgroundColor: Colors.green,
-                    onPressed: () {
+                    onPressed: () async{
                       start();
                       setState(() {});
                     },
                     child: const Icon(Icons.play_arrow,
                         color: Colors.white, size: 40)),
                 FloatingActionButton(
-                  onPressed: () {
+                  onPressed: (){
                     stop();
                     setState(() {});
                   },
@@ -105,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 FloatingActionButton(
-                  onPressed: () {
+                  onPressed: () async{
                     reset();
                     setState(() {});
                   },
